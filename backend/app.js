@@ -1,20 +1,47 @@
 const express = require("express");
+const path = require("path")
 const dotenv = require("dotenv");
 const sequelize = require("./db");
-const { branchRoutes, positionRoutes,employeeRoutes,reportRoutes } = require('./Routes');
+const expressLayouts = require('express-ejs-layouts'); 
+const { branchRoutes, positionRoutes,employeeRoutes,reportRoutes,viewPositionRoutes,viewReportRoutes,viewBranchRoutes } = require('./Routes');
+const methodOverride = require('method-override');
 
 dotenv.config();
 
 const app = express();
 
-app.use(express.json());
-app.use('/branches',branchRoutes);//работает
-app.use('/positions',positionRoutes);//работает
-app.use('/employees',employeeRoutes);// в процессе разработки
-app.use('/reports',reportRoutes);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set('layout', 'layouts/main'); 
 
-app.get("/", function (req, res) {
-  res.send("Main");
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method')); 
+app.use(express.static(path.join(__dirname,'public')));
+
+//API
+app.use('/api/branches',branchRoutes);
+app.use('/api/positions',positionRoutes);
+app.use('/api/employees',employeeRoutes);
+app.use('/api/reports',reportRoutes);
+
+//EJS
+app.use('/positions',viewPositionRoutes);
+app.use('/reports',viewReportRoutes);
+app.use('/branches',viewBranchRoutes);
+
+
+app.get('/',(req,res)=>{
+  res.redirect('/branches')
+});
+
+//Отдельный роут для настроек
+app.get('/settings',(req,res)=>{
+  res.render('pages/settings/index',{
+    title:'Настройки',
+    activePage:'settings'
+  })
 });
 
 const PORT = process.env.APP_PORT || 5000;

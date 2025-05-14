@@ -1,0 +1,55 @@
+<div class="container-fluid mt-4">
+  <h1>Настройки</h1>
+  
+  <!-- Форма для выбора цветов -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Тема приложения</h5>
+      
+      <!-- Предустановленные темы -->
+      <div class="theme-selector mb-3">
+        <div class="theme-option" data-theme="default" 
+             style="background: #212529; color: white">
+          <div class="color-preview" style="background: #0d6efd"></div>
+          <span>Стандартная</span>
+        </div>
+        <div class="theme-option" data-theme="green"
+             style="background: #198754; color: white">
+          <div class="color-preview" style="background: #ca9905fe"></div>
+          <span>Природа</span>
+        </div>
+        <div class="theme-option" data-theme="purple"
+             style="background: #6f42c1; color: white">
+          <div class="color-preview" style="background: #fd7e14"></div>
+          <span>Фиолетовая</span>
+        </div>
+        <div class="theme-option" data-theme="dark"
+             style="background: #343a40; color: white">
+          <div class="color-preview" style="background: #adb5bd"></div>
+          <span>Темная</span>
+        </div>
+      </div>
+      <button id="saveTheme" class="btn btn-primary">Сохранить тему</button>
+      <button id="resetTheme" class="btn btn-danger">Сбросить тему</button>
+    </div>
+  </div>
+
+  <!-- Форма для выбора шрифтов -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Шрифт приложения</h5>
+      
+      <div class="mb-3">
+        <label for="fontFamily" class="form-label">Выбор шрифта</label>
+        <select id="fontFamily" class="form-select">
+          <option value="'Roboto', Arial, sans-serif">Roboto</option>
+          <option value="'Open Sans', Arial, sans-serif">Open Sans</option>
+          <option value="'Lato', Arial, sans-serif">Lato</option>
+          <option value="'Comic Sans MS', cursive">Comic Sans</option>
+        </select>
+      </div>
+      <button id="saveFont" class="btn btn-primary">Сохранить шрифт</button>
+      <button id="resetFont" class="btn btn-danger">Сбросить шрифт</button>
+    </div>
+  </div>
+</div>

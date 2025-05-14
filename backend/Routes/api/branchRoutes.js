@@ -1,6 +1,6 @@
 const express = require("express");
-const { createBranch,getBranchTree,deleteBranch,getAllEmployeesByBranch } = require("../controllers/BranchController");
-const { createBranchValidation,deleteBranchValidation,validate } = require('../validations/branchValidation');
+const { createBranch,getBranchTree,deleteBranch,getAllEmployeesByBranch } = require("../../controllers/api/branchController");
+const { createBranchValidation,deleteBranchValidation,validate } = require('../../validations/branchValidation');
 
 
 const router = express.Router();

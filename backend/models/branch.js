@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       references:{
         model:'branches',
         key:'id'
-      }
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     }, 
     name: {
       type:DataTypes.STRING,

@@ -1,0 +1,511 @@
+/* Глобальные переменные */
+:root {
+  /* Цвета */
+  --primary-color:#212529;
+  --secondary-color: #0d6efd;
+  --success-color: #198754; /* Успех */
+  --danger-color: #dc3545; /* Ошибка */
+  --warning-color: #ffc107; /* Предупреждение */
+  --info-color: #0dcaf0; /* Информация */
+  --background-color: #f8f9fa; /* Фоновый цвет */
+  --text-color: #212529; /* Основной цвет текста */
+  --light-text-color: #6c757d; /* Светлый цвет текста */
+
+  /*Цвета для Офисов(дерево) */
+  --hover-color: #3f37c9;
+  --background: #f8f9fa;
+  --border-color: #e9ecef;
+
+  /* Шрифты */
+  --font-family: 'Roboto', Arial, sans-serif; /* Основной шрифт */
+  --font-size-base: 1.2rem; /* Базовый размер шрифта */
+  --font-weight-normal: 400; /* Нормальный вес */
+  --font-weight-bold: 700; /* Жирный вес */
+
+  /* Отступы */
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 2rem;
+
+  /* Размеры */
+  --sidebar-width: 250px; /* Ширина сайдбара */
+  --action-column-width: 120px; /* Ширина колонки действий */
+}
+
+
+/* Сброс стилей */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* Сайдбар */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  background-color: var(--primary-color) !important;
+  color: white;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+.sidebar .nav-link.active {
+  background-color: var(--secondary-color); /* Используем вторичный цвет */
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+}
+
+/* Контент */
+.content {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  padding: var(--spacing-medium);
+  transition: all 0.3s;
+  color: #212529;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Таблица список должностей */
+.table-container {
+  margin: var(--spacing-medium);
+  overflow-x: auto;
+}
+.table thead th {
+    background-color: var(--primary-color); /* Фон ячеек */
+  }
+
+.table th.name-col {
+  width: calc(100% - var(--action-column-width));
+  min-width: 300px;
+}
+
+.table th.action-col,
+.table td.action-col {
+  width: var(--action-column-width);
+  text-align: center;
+  white-space: nowrap;
+}
+.table-light th {
+  color: var(--text-color);
+}
+
+
+/* Кнопки */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+}
+
+/* Карточки */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+/* Формы */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
+}
+
+/* Отчеты и справки */
+.branch-content {
+    transition: all 0.3s ease;
+}
+.btn-light {
+    border: 1px solid #ced4da;
+    margin: 2px 0;
+}
+.btn-light:hover {
+    background-color: #f8f9fa;
+}
+.arrow {
+    transition: transform 0.3s;
+}
+
+/* Вкладки с темами цветом */
+.theme-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.theme-option {
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.theme-option.active {
+  border-color: #ffc107;
+  transform: scale(1.05);
+}
+
+.color-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 auto 0.5rem;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+/* Адаптивность формы */
+@media (max-width: 576px) {
+  .card {
+    margin: 0 var(--spacing-medium);
+  }
+}
+/* Офисы и филиалы(дерево) */
+
+.tree-container {
+  background: var(--primary-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+}
+
+.branch-node {
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+.branch-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.branch-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.branch-content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.branch-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.branch-node:hover .branch-actions {
+  opacity: 1;
+}
+
+.tree-toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tree-toggle:hover {
+  background: var(--secondary-color);
+  filter: brightness(80%);
+}
+
+.node-children {
+  padding-left: 2.5rem;
+  margin: 0.5rem 0;
+  position: relative;
+}
+
+.node-children::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--secondary-color);
+}
+
+.branch-name {
+  font-weight: 500;
+  color: #2b2d42;
+  font-size: 1.3rem;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:var(--secondary-color);
+}
+
+.btn-icon:hover {
+  background: var(--background);
+}
+
+.add-root-btn {
+  background: var(--secondary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.add-root-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-1px);
+  color: white;
+  text-decoration: none;
+}
+
+.badge-children {
+  background: #e9ecef;
+  color: #495057;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+.branch-card.active {
+  border: 7px solid var(--secondary-color);
+}
+/* Модальные окна для офисов */
+.modal-content {
+  background: var(--primary-color); 
+  color: var(--text-color)
+}
+/* кнопка сортировки */
+.sort-indicator {
+  background: var(--secondary-color);
+  border-radius: 20px;
+  font-size: 1em;
+  color: #ffffff;
+  margin-right: 5px;
+}
+.sort-btn {
+  background: none;
+  color: var(--secondary-color);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+/*Таблица сотрудников */
+
+
+/* Поле с сотрудниками(справа от офисов)*/
+
+/*Поле с фильтрацией сотрудников*/
+#filtersCollapseCard {
+  box-shadow: 0 6px 0px -2px var(--secondary-color);
+}
+
+/*Адаптив*/
+/* Мобильная адаптация */
+@media (max-width: 576px) {
+  /* Общие стили */
+  :root {
+    --font-size-base: 1rem;
+    --spacing-medium: 0.75rem;
+  }
+
+  /* Дерево филиалов */
+  .tree-container {
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .branch-card {
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .branch-content {
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .branch-name {
+    font-size: 1.1rem;
+  }
+
+  .node-children {
+    padding-left: 1.5rem;
+  }
+
+  .node-children::before {
+    left: 0.5rem;
+  }
+
+  .tree-toggle {
+    width: 24px;
+    height: 24px;
+  }
+
+  .branch-actions {
+    opacity: 1; /* Всегда показываем кнопки на мобилах */
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Таблицы */
+  .table-container {
+    margin: 0.5rem;
+  }
+
+  .table th, .table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Модальные окна */
+  .modal-content {
+    margin: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+
+  /* Карточки */
+  .card-header h5 {
+    font-size: 1.2rem;
+  }
+
+  /* Кнопки действий */
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Фильтры */
+  #filtersCollapseCard .form-control {
+    font-size: 0.9rem;
+  }
+
+  /* Адаптация текста */
+  .badge-children {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  /* Скрытие второстепенных элементов */
+  .branch-card.active {
+    border-width: 3px;
+  }
+
+  /* Анимации */
+  .branch-card:hover {
+    transform: none;
+  }
+}
+
+/* Особые адаптации для очень маленьких экранов */
+@media (max-width: 400px) {
+  .branch-name {
+    font-size: 1rem;
+  }
+
+  .tree-toggle {
+    width: 20px;
+    height: 20px;
+  }
+
+  .node-children {
+    padding-left: 1rem;
+  }
+
+  .btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .table th, .table td {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggler {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1050;
+  }
+  
+  .sidebar {
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  }
+  
+  .content {
+    padding-top: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .filter-form .row {
+    flex-direction: column;
+  }
+  
+  .filter-form .col {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

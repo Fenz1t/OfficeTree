@@ -1,0 +1,67 @@
+<body>
+<div class="container mt-4">
+    <h1 class="text-dark">Справка по сотрудникам</h1>
+    
+    <div class="card">
+        <div class="card-header">
+            Сотрудники со стажем > 3 лет и окладом < 30000
+        </div>
+        
+        <div class="card-body bg-white">
+            <% function renderBranch(branch) { %>
+                <div class="branch mb-3">
+                    <!-- Кнопка филиала -->
+                    <button class="btn btn-light w-100 text-start d-flex justify-content-between align-items-center"
+                            onclick="toggleBranch(this)">
+                        <div class="d-flex align-items-center">
+                            <span class="arrow me-2">▶</span>
+                            <span class="branch-name"><%= branch.name %></span>
+                        </div>
+                        <span class="badge bg-secondary"><%= branch.employees.length %></span>
+                    </button>
+
+                    <!-- Таблица сотрудников -->
+                    <div class="branch-content mt-2" style="display: none; margin-left: 20px">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ФИО</th>
+                                    <th>Оклад</th>
+                                    <th>Филиал</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% branch.employees.forEach(emp => { %>
+                                    <tr>
+                                        <td><%= emp.fullName %></td>
+                                        <td class="text-end"><%= emp.salary.toLocaleString() %> ₽</td>
+                                        <td><%= emp.branchName %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <% } %>
+
+            <% reportData.forEach(branch => { %>
+                <%= renderBranch(branch) %>
+            <% }) %>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+function toggleBranch(btn) {
+    const content = btn.closest('.branch').querySelector('.branch-content');
+    const arrow = btn.querySelector('.arrow');
+    
+    if (content.style.display === 'block') {
+        content.style.display = 'none';
+        arrow.textContent = '▶';
+    } else {
+        content.style.display = 'block';
+        arrow.textContent = '▼';
+    }
+}
+</script>

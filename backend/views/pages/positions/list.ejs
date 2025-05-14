@@ -1,0 +1,70 @@
+<!-- positions/list.ejs -->
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="my-4">Список должностей</h1>
+    <a href="/positions/create" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> Создать должность
+    </a>
+  </div>
+
+  <div class="table-responsive table-container">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col" class="name-col">Название</th>
+          <th scope="col" class="action-col">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(positions && positions.length > 0) { %>
+          <% positions.forEach((position, index) => { %>
+            <tr id="position-row-<%= position.id %>">
+              <td class="name-col"><%= position.name %></td>
+              <td class="action-col">
+                <a href="/positions/<%= position.id %>/edit" class="btn btn-sm btn-warning me-2">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <button class="btn btn-sm btn-danger" onclick="deletePosition('<%= position.id %>')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="2" class="text-center">Должности не найдены</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+ async function deletePosition(id) {
+  if (!confirm('Вы уверены, что хотите удалить эту должность?')) {
+    return;
+  }
+  try {
+    const response = await fetch(`/positions/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.ok) {
+      // Удаляем строку из таблицы
+      const row = document.getElementById(`position-row-${id}`);
+      if (row) {
+        row.remove();
+      }
+      // Показываем уведомление
+      showAlert('success', 'Должность успешно удалена');
+    } else {
+      const errorData = await response.json();
+      showAlert('danger', errorData.message || 'Ошибка при удалении');
+    }
+  } catch (error) {
+    showAlert('danger', 'Ошибка соединения');
+  }
+}
+</script>
