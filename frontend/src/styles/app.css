@@ -1,0 +1,33 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Общие стили для контента */
+.main-content {
+  margin-left: 240px; /* Ширина Drawer */
+  padding: 20px;
+  min-height: 100vh;
+  transition: margin 0.3s;
+}
+
+a {
+  text-decoration:dotted;
+  color: inherit;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+.ag-cell {
+  font-size: 16px;
+}
+.ag-header-cell-label {
+  font-size: 18px;
+}

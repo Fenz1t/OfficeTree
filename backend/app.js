@@ -5,10 +5,15 @@ const sequelize = require("./db");
 const expressLayouts = require('express-ejs-layouts'); 
 const { branchRoutes, positionRoutes,employeeRoutes,reportRoutes,viewPositionRoutes,viewReportRoutes,viewBranchRoutes } = require('./Routes');
 const methodOverride = require('method-override');
+const cors = require('cors');
+
 
 dotenv.config();
 
 const app = express();
+app.use(cors({
+  origin:'http://localhost:5000'// - для фронтенда
+}))
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
