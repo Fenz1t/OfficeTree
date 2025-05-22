@@ -146,7 +146,7 @@ const autoGroupColumnDef = useMemo(() => ({
           autoGroupColumnDef={autoGroupColumnDef} 
           treeData={true}
           animateRows={true}
-          groupDefaultExpanded={-1}
+          groupDefaultExpanded={0}
           getDataPath={getDataPath}
           rowSelection='single'
           onSelectionChanged={onSelectionChanged} 
