@@ -49,3 +49,12 @@ exports.deleteBranch = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+exports.getBranchesList = async(req,res) =>{
+  try {
+      const branchList =  await branchService.getBranchesList();
+      return res.status(200).json(branchList)
+  } catch (error) {
+      return res.status(500).json({error:error.message});
+  }
+}

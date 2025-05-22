@@ -1,68 +1,66 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
-import { 
-  Box, 
-  CircularProgress, 
-  Typography,
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-enterprise";
+import {
+  Box,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
+  CircularProgress,
+  Typography,
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
-  MenuItem
-} from '@mui/material';
-import OfficesService from '../../api/OfficesService';
+} from "@mui/material";
+
+import OfficesService from "../../api/OfficesService";
 
 const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
-  const [items, setItems] = useState([]);
+  const [rowData, setRowData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [expandedItems, setExpandedItems] = useState([]);
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [newOffice, setNewOffice] = useState({ name: '', parentId: '' });
-  const [selectedDeleteId, setSelectedDeleteId] = useState('');
+  const [error, setError] = useState(null);
+  const [newOffice, setNewOffice] = useState({ name: "", parentId: "" });
+  const [selectedDeleteId, setSelectedDeleteId] = useState("");
 
-  const transformData = useCallback((branches) => {
-    return branches.map(branch => ({
-      id: branch.id.toString(),
-      label: branch.name,
-      children: branch.children ? transformData(branch.children) : [],
-    }));
-  }, []);
+  const gridRef = useRef();
 
-  const fetchBranches = useCallback(async () => {
+  const fetchOffices = useCallback(async () => {
     try {
-      const data = await OfficesService.getAll();
-      if (Array.isArray(data)) {
-        const transformedData = transformData(data);
-        setItems(transformedData);
-        setExpandedItems(prev => [...new Set([...prev, ...transformedData.map(item => item.id)])]);
-      }
+      setLoading(true);
+      const data = await OfficesService.getAllList();
+      setRowData(data);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Ошибка при загрузке");
     } finally {
       setLoading(false);
     }
-  }, [transformData]);
+  }, []);
 
   useEffect(() => {
-    fetchBranches();
-  }, [fetchBranches]);
+    fetchOffices();
+  }, [fetchOffices]);
 
   const handleCreate = async () => {
     try {
       await OfficesService.create({
         name: newOffice.name,
-        parentId: newOffice.parentId || null
+        parentId: newOffice.parentId || null,
       });
       setCreateOpen(false);
-      setNewOffice({ name: '', parentId: '' });
-      await fetchBranches();
+      setNewOffice({ name: "", parentId: "" });
+      await fetchOffices();
     } catch (error) {
       setError(error.message);
     }
@@ -72,61 +70,94 @@ const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
     try {
       await OfficesService.delete(selectedDeleteId);
       setDeleteOpen(false);
-      setSelectedDeleteId('');
-      await fetchBranches();
+      setSelectedDeleteId("");
+      await fetchOffices();
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const flattenItems = (items) => {
-    return items.reduce((acc, item) => {
-      acc.push(item);
-      if (item.children) {
-        acc.push(...flattenItems(item.children));
-      }
-      return acc;
-    }, []);
-  };
+ const columnDefs = useMemo(() => [
+  {
+    field: "name",
+    headerName: "Дерево филиалов",
+    hide: true, 
+  },
+], []);
 
-  const handleItemSelection = (event, itemId) => {
-    onBranchSelect(itemId);
-  };
+const autoGroupColumnDef = useMemo(() => ({
+  headerName: "Дерево филиалов",          
+  field: "name",                
+  cellRendererParams: {
+    suppressCount: true,       
+  },
+  flex: 1,
+}), []);
+
+  const getDataPath = useCallback(
+    (data) => {
+      const path = [];
+      let current = data;
+      const map = new Map(rowData.map((item) => [item.id, item]));
+      while (current) {
+        path.unshift(current.name);
+        current = map.get(current.parentId);
+      }
+      return path;
+    },
+    [rowData]
+  );
+
+  const onSelectionChanged = useCallback(() => {
+    const selectedNode = gridRef.current?.api.getSelectedNodes()[0];
+    if (selectedNode && selectedNode.data) {
+      onBranchSelect(selectedNode.data.id);
+    }
+  }, [onBranchSelect]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Box sx={{ minHeight: 400, flexGrow: 1, maxWidth: 300 }}>
-
-      <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-        <Button 
-          variant="contained" 
-          onClick={() => setCreateOpen(true)}
+    <Box sx={{ height: "500px", width: "30%" }}>
+      <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+        <Button
+          variant="contained"
           fullWidth
+          onClick={() => setCreateOpen(true)}
         >
           Создать офис
         </Button>
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           color="error"
-          onClick={() => setDeleteOpen(true)}
           fullWidth
+          onClick={() => setDeleteOpen(true)}
         >
           Удалить офис
         </Button>
       </Box>
 
+      <div className="ag-theme-quartz" style={{ height: "100%", width: "100%" }}>
+        <AgGridReact
+          ref={gridRef}
+          rowData={rowData}
+          columnDefs={columnDefs}
+          autoGroupColumnDef={autoGroupColumnDef} 
+          treeData={true}
+          animateRows={true}
+          groupDefaultExpanded={-1}
+          getDataPath={getDataPath}
+          rowSelection='single'
+          onSelectionChanged={onSelectionChanged} 
+          defaultColDef={{
+            resizable: true,
+            sortable: true,
+          }}
+        />
+      </div>
 
-      <RichTreeView
-        items={items}
-        expandedItems={expandedItems}
-        selectedItems={selectedBranchId ? [selectedBranchId] : []}
-        onExpandedItemsChange={(event, itemIds) => setExpandedItems(itemIds)}
-        onSelectedItemsChange={handleItemSelection}
-        aria-label="office-tree"
-      />
-
+      {/* Диалог создания */}
       <Dialog open={createOpen} onClose={() => setCreateOpen(false)}>
         <DialogTitle>Создание нового офиса</DialogTitle>
         <DialogContent sx={{ pt: 2, minWidth: 300 }}>
@@ -135,20 +166,24 @@ const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
             fullWidth
             label="Название офиса"
             value={newOffice.name}
-            onChange={(e) => setNewOffice(prev => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setNewOffice((prev) => ({ ...prev, name: e.target.value }))
+            }
             sx={{ mb: 2 }}
           />
           <FormControl fullWidth>
             <InputLabel>Родительский офис</InputLabel>
             <Select
               value={newOffice.parentId}
-              onChange={(e) => setNewOffice(prev => ({ ...prev, parentId: e.target.value }))}
+              onChange={(e) =>
+                setNewOffice((prev) => ({ ...prev, parentId: e.target.value }))
+              }
               label="Родительский офис"
             >
               <MenuItem value="">Главный офис</MenuItem>
-              {flattenItems(items).map((office) => (
+              {rowData.map((office) => (
                 <MenuItem key={office.id} value={office.id}>
-                  {office.label}
+                  {office.name}
                 </MenuItem>
               ))}
             </Select>
@@ -162,6 +197,7 @@ const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
         </DialogActions>
       </Dialog>
 
+      {/* Диалог удаления */}
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
         <DialogTitle>Удаление офиса</DialogTitle>
         <DialogContent sx={{ pt: 2, minWidth: 300 }}>
@@ -170,11 +206,11 @@ const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
             <Select
               value={selectedDeleteId}
               onChange={(e) => setSelectedDeleteId(e.target.value)}
-              label="Выберите офис для удаления"
+              label="Офис"
             >
-              {flattenItems(items).map((office) => (
+              {rowData.map((office) => (
                 <MenuItem key={office.id} value={office.id}>
-                  {office.label}
+                  {office.name}
                 </MenuItem>
               ))}
             </Select>
@@ -182,10 +218,10 @@ const OfficeTree = ({ onBranchSelect, selectedBranchId }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteOpen(false)}>Отмена</Button>
-          <Button 
-            onClick={handleDelete} 
-            color="error"
+          <Button
+            onClick={handleDelete}
             disabled={!selectedDeleteId}
+            color="error"
           >
             Удалить
           </Button>

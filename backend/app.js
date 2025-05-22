@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin:'https://office-tree-frontend.cloudpub.ru'// - для фронтенда
+  origin:'http://localhost:5000'// - для фронтенда
 }))
 
 app.set('views', path.join(__dirname, 'views'));

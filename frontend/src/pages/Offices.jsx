@@ -8,13 +8,12 @@ const Offices = () => {
   const [selectedBranchId, setSelectedBranchId] = useState(null);
 
   return (
-    <Box display="flex" gap={4} p={2}>
-      <OfficeTree onBranchSelect={setSelectedBranchId} />
-      <Box flexGrow={1}>
-        <EmployeesTable branchId={selectedBranchId} />
-      </Box>
+    <Box display="flex" gap={2}>
+      <OfficeTree onBranchSelect={setSelectedBranchId}/>
+      <EmployeesTable branchId={selectedBranchId} />
     </Box>
   );
 };
+
 
 export default Offices;

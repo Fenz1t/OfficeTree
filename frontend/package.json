@@ -13,6 +13,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "ag-grid-community": "^33.3.0",
+    "ag-grid-enterprise": "^33.3.0",
     "ag-grid-react": "^33.3.0",
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",

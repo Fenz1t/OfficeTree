@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import { 
-  Box, 
-  CircularProgress, 
-  Typography, 
+import React, { useEffect, useState } from "react";
+import { AgGridReact } from "ag-grid-react";
+import {
+  Box,
+  CircularProgress,
+  Typography,
   Button,
   Dialog,
   DialogTitle,
@@ -13,11 +13,11 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  FormControl
-} from '@mui/material';
-import OfficesService from '../../api/OfficesService';
-import EmployeeService from '../../api/EmployeeService';
-import PositionService from '../../api/PositionService';
+  FormControl,
+} from "@mui/material";
+import OfficesService from "../../api/OfficesService";
+import EmployeeService from "../../api/EmployeeService";
+import PositionService from "../../api/PositionService";
 
 const EmployeesTable = ({ branchId }) => {
   const [rowData, setRowData] = useState([]);
@@ -27,68 +27,70 @@ const EmployeesTable = ({ branchId }) => {
   const [positions, setPositions] = useState([]);
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const [formData, setFormData] = useState({
-    fullName: '',
-    positionId: '',
-    salary: '',
-    hireDate: '',
-    birthDate: ''
+    fullName: "",
+    positionId: "",
+    salary: "",
+    hireDate: "",
+    birthDate: "",
   });
 
   const columnDefs = [
-    { 
-      field: 'fullName', 
-      headerName: 'ФИО', 
+    {
+      field: "fullName",
+      headerName: "ФИО",
       flex: 1,
-      filter: 'agTextColumnFilter',
-      floatingFilter: true
-    },
-    { 
-      field: 'positionId', 
-      headerName: 'Должность',
-      valueGetter: (params) => {
-        const position = positions.find(p => p.id === params.data.positionId);
-        return position?.name || '';
-      },
-      filter: 'agTextColumnFilter',
-      floatingFilter: true
-    },
-    { 
-      field: 'salary', 
-      headerName: 'Оклад',
-      filter: 'agNumberColumnFilter',
-      floatingFilter: true
-    },
-    { 
-      field: 'birthDate', 
-      headerName: 'Дата рождения',
-      filter: 'agDateColumnFilter',
+      filter: "agTextColumnFilter",
       floatingFilter: true,
-      valueFormatter: (params) => params.value ? new Date(params.value).toLocaleDateString() : ''
-    },
-    { 
-      field: 'hireDate', 
-      headerName: 'Дата приема',
-      filter: 'agDateColumnFilter',
-      floatingFilter: true,
-      valueFormatter: (params) => params.value ? new Date(params.value).toLocaleDateString() : ''
     },
     {
-      field: 'actions',
-      headerName: 'Действия',
+      field: "positionId",
+      headerName: "Должность",
+      valueGetter: (params) => {
+        const position = positions.find((p) => p.id === params.data.positionId);
+        return position?.name || "";
+      },
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+    },
+    {
+      field: "salary",
+      headerName: "Оклад",
+      filter: "agNumberColumnFilter",
+      floatingFilter: true,
+    },
+    {
+      field: "birthDate",
+      headerName: "Дата рождения",
+      filter: "agDateColumnFilter",
+      floatingFilter: true,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString() : "",
+    },
+    {
+      field: "hireDate",
+      headerName: "Дата приема",
+      filter: "agDateColumnFilter",
+      floatingFilter: true,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString() : "",
+    },
+    {
+      field: "actions",
+      headerName: "Действия",
       cellRenderer: (params) => (
         <div>
-          <Button 
-            variant="outlined" 
-            color="primary" 
+          <Button
+            variant="outlined"
+            color="primary"
             size="small"
             onClick={() => handleEdit(params.data)}
-            style={{ marginRight: '8px' }}
+            style={{ marginRight: "8px" }}
           >
             Изменить
           </Button>
-          <Button 
-            variant="outlined" 
-            color="error" 
+          <Button
+            variant="outlined"
+            color="error"
             size="small"
             onClick={() => handleDelete(params.data.id)}
           >
@@ -97,8 +99,8 @@ const EmployeesTable = ({ branchId }) => {
         </div>
       ),
       filter: false,
-      sortable: false
-    }
+      sortable: false,
+    },
   ];
 
   useEffect(() => {
@@ -107,7 +109,7 @@ const EmployeesTable = ({ branchId }) => {
         const data = await PositionService.getAll();
         setPositions(data);
       } catch (error) {
-        console.error('Ошибка загрузки должностей:', error);
+        console.error("Ошибка загрузки должностей:", error);
       }
     };
     fetchPositions();
@@ -133,11 +135,11 @@ const EmployeesTable = ({ branchId }) => {
   const handleCreate = () => {
     setCurrentEmployee(null);
     setFormData({
-      fullName: '',
-      positionId: '',
-      salary: '',
-      hireDate: '',
-      birthDate: ''
+      fullName: "",
+      positionId: "",
+      salary: "",
+      hireDate: "",
+      birthDate: "",
     });
     setOpenDialog(true);
   };
@@ -146,10 +148,10 @@ const EmployeesTable = ({ branchId }) => {
     setCurrentEmployee(employee);
     setFormData({
       fullName: employee.fullName,
-      positionId: employee.positionId || '',
+      positionId: employee.positionId || "",
       salary: employee.salary,
       hireDate: employee.hireDate,
-      birthDate: employee.birthDate
+      birthDate: employee.birthDate,
     });
     setOpenDialog(true);
   };
@@ -159,7 +161,7 @@ const EmployeesTable = ({ branchId }) => {
       await EmployeeService.delete(employeeId);
       await fetchEmployees();
     } catch (error) {
-      console.error('Ошибка удаления:', error);
+      console.error("Ошибка удаления:", error);
     }
   };
 
@@ -167,7 +169,7 @@ const EmployeesTable = ({ branchId }) => {
     try {
       const employeeData = {
         ...formData,
-        branchId: branchId
+        branchId: branchId,
       };
 
       if (currentEmployee) {
@@ -175,28 +177,22 @@ const EmployeesTable = ({ branchId }) => {
       } else {
         await EmployeeService.create(employeeData);
       }
-      
+
       await fetchEmployees();
       setOpenDialog(false);
     } catch (error) {
-      console.error('Ошибка сохранения:', error);
+      console.error("Ошибка сохранения:", error);
     }
   };
-
-  if (!branchId) return (
-    <Box p={4}>
-      <Typography>Выберите филиал для просмотра сотрудников</Typography>
-    </Box>
-  );
 
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <div className="ag-theme-quartz" style={{ height: 500, width: '100%' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <Button 
-          variant="contained" 
-          color="primary" 
+    <div className="ag-theme-quartz" style={{ height: 500, width: "100%" }}>
+      <div style={{ marginBottom: "16px" }}>
+        <Button
+          variant="contained"
+          color="primary"
           onClick={handleCreate}
           disabled={loading}
         >
@@ -206,7 +202,7 @@ const EmployeesTable = ({ branchId }) => {
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>
-          {currentEmployee ? 'Редактирование сотрудника' : 'Новый сотрудник'}
+          {currentEmployee ? "Редактирование сотрудника" : "Новый сотрудник"}
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -215,16 +211,20 @@ const EmployeesTable = ({ branchId }) => {
             label="ФИО"
             fullWidth
             value={formData.fullName}
-            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, fullName: e.target.value })
+            }
             required
           />
-          
+
           <FormControl fullWidth margin="dense" required>
             <InputLabel>Должность</InputLabel>
             <Select
               value={formData.positionId}
               label="Должность"
-              onChange={(e) => setFormData({...formData, positionId: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, positionId: e.target.value })
+              }
             >
               {positions.map((position) => (
                 <MenuItem key={position.id} value={position.id}>
@@ -240,7 +240,9 @@ const EmployeesTable = ({ branchId }) => {
             type="number"
             fullWidth
             value={formData.salary}
-            onChange={(e) => setFormData({...formData, salary: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, salary: e.target.value })
+            }
             required
           />
 
@@ -251,7 +253,9 @@ const EmployeesTable = ({ branchId }) => {
             fullWidth
             InputLabelProps={{ shrink: true }}
             value={formData.birthDate}
-            onChange={(e) => setFormData({...formData, birthDate: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, birthDate: e.target.value })
+            }
             required
           />
 
@@ -262,16 +266,23 @@ const EmployeesTable = ({ branchId }) => {
             fullWidth
             InputLabelProps={{ shrink: true }}
             value={formData.hireDate}
-            onChange={(e) => setFormData({...formData, hireDate: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, hireDate: e.target.value })
+            }
             required
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Отмена</Button>
-          <Button 
-            onClick={handleSubmit} 
-            color="primary" 
-            disabled={!formData.fullName || !formData.positionId || !formData.birthDate || !formData.hireDate}
+          <Button
+            onClick={handleSubmit}
+            color="primary"
+            disabled={
+              !formData.fullName ||
+              !formData.positionId ||
+              !formData.birthDate ||
+              !formData.hireDate
+            }
           >
             Сохранить
           </Button>
@@ -289,6 +300,12 @@ const EmployeesTable = ({ branchId }) => {
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[10, 20, 50, 100]}
+          overlayLoadingTemplate={
+            '<span class="ag-overlay-loading-center">Загрузка...</span>'
+          }
+          overlayNoRowsTemplate={
+            '<span class="ag-overlay-loading-center">Выберите филиал для получения сотрудников</span>'
+          }
         />
       )}
     </div>

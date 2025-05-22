@@ -9,6 +9,14 @@ const OfficesService = {
       throw new Error(`Ошибка получения дерева филиалов: ${error.message}`);
     }
   },
+  getAllList: async() =>{
+    try {
+        const response = await api.get('/branches/list');
+        return response.data;
+    } catch (error) {
+        throw new Error(`Ошибка получения cписка филиалов: ${error.message}`);
+    }
+  },
   getAllEmployeesByBranch: async (id) => {
     try {
       const response = await api.get(`/branches/${id}/employees`);

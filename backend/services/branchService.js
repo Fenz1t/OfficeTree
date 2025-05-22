@@ -104,6 +104,12 @@ exports.getEmployeesByBranch = async (branchId, queryParams) => {
   
     return buildTree(branches);
   };
+  exports.getBranchesList =async() =>{
+    const branches = await Branch.findAll({
+      attributes: ['id','name','parentId']
+    })
+    return branches
+  }
 
   exports.createBranch = async (name, parentId) => {
     return await Branch.create({ 
