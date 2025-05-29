@@ -119,11 +119,12 @@ const autoGroupColumnDef = useMemo(() => ({
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Box sx={{ height: "500px", width: "30%" }}>
+    <Box sx={{ height: "500px", width: "30%" }} data-tour="office-tree">
       <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
         <Button
           variant="contained"
           fullWidth
+          data-tour ='create-office'
           onClick={() => setCreateOpen(true)}
         >
           Создать офис
@@ -132,6 +133,7 @@ const autoGroupColumnDef = useMemo(() => ({
           variant="outlined"
           color="error"
           fullWidth
+          data-tour ='delete-office'
           onClick={() => setDeleteOpen(true)}
         >
           Удалить офис
@@ -158,7 +160,7 @@ const autoGroupColumnDef = useMemo(() => ({
       </div>
 
       {/* Диалог создания */}
-      <Dialog open={createOpen} onClose={() => setCreateOpen(false)}>
+      <Dialog open={createOpen} onClose={() => setCreateOpen(false)} data-tour='create-office-dialog'>
         <DialogTitle>Создание нового офиса</DialogTitle>
         <DialogContent sx={{ pt: 2, minWidth: 300 }}>
           <TextField

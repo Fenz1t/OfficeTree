@@ -89,3 +89,7 @@ exports.deleteEmployee = async (id) => {
     await employee.destroy();
     return { message: 'Сотрудник успешно удален' };
 };
+exports.getEmployeeList = async() => {
+    const result = await Employee.findAll();
+    return result;
+}

@@ -83,6 +83,7 @@ const EmployeesTable = ({ branchId }) => {
             variant="outlined"
             color="primary"
             size="small"
+            data-tour="edit-employee"
             onClick={() => handleEdit(params.data)}
             style={{ marginRight: "8px" }}
           >
@@ -90,6 +91,7 @@ const EmployeesTable = ({ branchId }) => {
           </Button>
           <Button
             variant="outlined"
+            data-tour="delete-employee"
             color="error"
             size="small"
             onClick={() => handleDelete(params.data.id)}
@@ -188,9 +190,14 @@ const EmployeesTable = ({ branchId }) => {
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <div className="ag-theme-quartz" style={{ height: 500, width: "100%" }}>
+    <div
+      className="ag-theme-quartz"
+      style={{ height: 500, width: "100%" }}
+      data-tour="employees-table"
+    >
       <div style={{ marginBottom: "16px" }}>
         <Button
+          data-tour="create-employee"
           variant="contained"
           color="primary"
           onClick={handleCreate}

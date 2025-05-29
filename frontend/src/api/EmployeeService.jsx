@@ -10,7 +10,14 @@ const EmployeeService = {
       throw new Error(`Ошибка получения сотрудника ${id}: ${error.message}`);
     }
   },
-
+  getAll: async() =>{
+    try {
+      const response = await api.get(`/employees`);
+      return response.data
+    } catch (error) {
+        throw new Error(`Ошибка получения сотрудников ${error.message}`);
+    }
+  },
   create: async (employeeData) => {
     try {
       const response = await api.post("/employees", employeeData);
